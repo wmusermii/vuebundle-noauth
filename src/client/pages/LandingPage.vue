@@ -12,7 +12,7 @@ import { dummyMembers } from '@/data/dummyMembers'
 
     <section class="container hero">
       <div>
-        <h1>Selamat datang di VueBundle NoAuth</h1>
+        <h1>Selamat datang di Merchant Sphere</h1>
         <p>
           Portal demo satu-build (Vue 3 + Express) tanpa modul login/RBAC. Konten di halaman
           ini seluruhnya data dummy, dan backend hanya menyediakan satu endpoint gateway yang
