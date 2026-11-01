@@ -1,21 +1,24 @@
+// src/client/stores/portal.ts
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { api } from '@/api'
 
 export const usePortalStore = defineStore('portal', () => {
   const name = ref('VueBundle NoAuth')
-  const tagline = ref('')
+  const maintenanceMode = ref(false)
+  const supportEmail = ref('')
 
   async function load() {
     try {
-      const d = await api.get<{ name: string; tagline: string }>('/api/public/portal')
+      const d = await api.get<{ name: string; maintenanceMode: boolean; supportEmail: string }>('/api/public/portal')
       name.value = d.name
-      tagline.value = d.tagline
+      maintenanceMode.value = d.maintenanceMode
+      supportEmail.value = d.supportEmail
       document.title = d.name
     } catch {
-      /* pakai nilai bawaan kalau backend belum jalan */
+      /* pakai default kalau backend belum jalan */
     }
   }
 
-  return { name, tagline, load }
+  return { name, maintenanceMode, supportEmail, load }
 })

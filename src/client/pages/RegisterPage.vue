@@ -6,6 +6,7 @@ import StepAccount from './wizard/StepAccount.vue'
 import StepPersonal from './wizard/StepPersonal.vue'
 import StepDocuments from './wizard/StepDocuments.vue'
 import StepConfirm from './wizard/StepConfirm.vue'
+import { theme } from '@/theme.ts'
 
 const portal = usePortalStore()
 const steps = ['Akun', 'Data Diri', 'Dokumen', 'Konfirmasi']
@@ -66,17 +67,24 @@ const isLastStep = computed(() => current.value === steps.length - 1)
 
 <template>
   <div class="auth-wrap">
+    <!-- RegisterPage.vue — ganti isi <aside class="auth-aside"> -->
     <aside class="auth-aside">
+      <img v-if="theme.login_image_url" class="auth-aside-bg" :src="theme.login_image_url" alt="" />
+      <div class="auth-aside-overlay" :class="{ 'has-image': theme.login_image_url }"></div>
       <div class="brand">
-        <span class="brand-mark">{{ portal.name.charAt(0) }}</span>
+        <img v-if="theme.logo_url" class="brand-logo" :src="theme.logo_url" alt="" />
+        <span v-else class="brand-mark">{{ portal.name.charAt(0) }}</span>
         {{ portal.name }}
       </div>
-      <p>Formulir pendaftaran bergaya wizard, mengikuti data dummy saja.</p>
+      <h1 class="auth-aside-tagline">Form registrasi Dimonitor oleh DF18, anggota ADIGSI:</h1>
     </aside>
     <section class="auth-main">
       <div class="auth-form" style="max-width:520px">
         <template v-if="!submitted">
           <h1>Daftar Akun</h1>
+          <p v-if="portal.maintenanceMode" class="alert alert-info" role="status">
+            Portal sedang dalam pemeliharaan. Pendaftaran untuk sementara mungkin tidak diproses.
+          </p>
           <StepIndicator :steps="steps" :current="current" />
           <p v-if="error" class="alert" role="alert" style="margin-bottom:16px">{{ error }}</p>
 
@@ -90,6 +98,9 @@ const isLastStep = computed(() => current.value === steps.length - 1)
             <button v-if="!isLastStep" class="btn btn-primary" @click="next">Lanjut</button>
             <button v-else class="btn btn-primary" @click="submit">Kirim Pendaftaran</button>
           </div>
+          <p v-if="portal.supportEmail" class="muted hint">
+            Butuh bantuan? Hubungi <a :href="`mailto:${portal.supportEmail}`">{{ portal.supportEmail }}</a>
+          </p>
           <p class="hint muted">
             Sudah punya akun? <RouterLink to="/login">Masuk</RouterLink>
           </p>

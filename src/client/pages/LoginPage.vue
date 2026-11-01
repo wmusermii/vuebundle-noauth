@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { usePortalStore } from '@/stores/portal'
+import { theme } from '@/theme'
 const portal = usePortalStore()
 const username = ref('')
 const password = ref('')
@@ -9,11 +10,14 @@ const password = ref('')
 <template>
   <div class="auth-wrap">
     <aside class="auth-aside">
+      <img v-if="theme.login_image_url" class="auth-aside-bg" :src="theme.login_image_url" alt="" />
+      <div class="auth-aside-overlay" :class="{ 'has-image': theme.login_image_url }"></div>
       <div class="brand">
-        <span class="brand-mark">{{ portal.name.charAt(0) }}</span>
+        <img v-if="theme.logo_url" class="brand-logo" :src="theme.logo_url" alt="" />
+        <span v-else class="brand-mark">{{ portal.name.charAt(0) }}</span>
         {{ portal.name }}
       </div>
-      <p>Satu build Vue 3 + Express, tanpa modul auth aktif. Halaman ini hanya contoh tampilan.</p>
+      <h1 class="auth-aside-tagline">Satu build Vue 3 + Express, tanpa modul auth aktif.</h1>
     </aside>
     <section class="auth-main">
       <form class="auth-form" @submit.prevent>

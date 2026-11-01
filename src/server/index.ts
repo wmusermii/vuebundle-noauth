@@ -8,6 +8,7 @@ import rateLimit from 'express-rate-limit'
 
 import { publicRouter } from './routes/public'
 import { gatewayRouter } from './routes/gateway'
+import { publicThemeRouter } from './routes/theme'
 
 const app = express()
 app.set('trust proxy', Number(process.env.TRUST_PROXY ?? 0))
@@ -19,6 +20,7 @@ app.use(cookieParser())
 // rate limit khusus gateway, karena endpoint ini menembus ke backend lain
 const gatewayLimiter = rateLimit({ windowMs: 60_000, limit: 120 })
 
+app.use('/api/public/theme', publicThemeRouter)
 app.use('/api/public', publicRouter)
 app.use('/api/gateway', gatewayLimiter, gatewayRouter)
 
