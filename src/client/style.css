@@ -17,15 +17,17 @@
 }
 
 * { box-sizing: border-box; }
-html { color-scheme: light; }
+html { color-scheme: light; height: 100%; }
 body {
   margin: 0;
+  min-height: 100%;
   font-family: var(--font);
   font-size: 15px;
   line-height: 1.55;
   color: var(--text);
   background: var(--canvas);
 }
+#app { min-height: 100%; }
 h1, h2, h3 { margin: 0; line-height: 1.25; letter-spacing: -0.01em; }
 a { color: var(--primary); text-decoration: none; }
 .muted { color: var(--text-2); }
@@ -108,32 +110,77 @@ textarea.input { height: auto; padding: 10px 12px; }
 .cta-block h2 { color: #fff; }
 
 /* ===== Auth pages ===== */
-.auth-wrap { min-height: calc(100vh - 68px); display: grid; grid-template-columns: .9fr 1.1fr; }
-.auth-aside { background: var(--primary); color: #fff; padding: 48px; display: flex; flex-direction: column; justify-content: center; gap: 16px; }
+/* flex, bukan grid: flex item otomatis saling menyamakan tinggi (align-items
+   default = stretch) walau kontennya beda panjang, jadi panel hijau kiri
+   selalu penuh sampai bawah mengikuti panel kanan yang lebih tinggi */
+.auth-wrap { min-height: 100vh; display: flex; align-items: stretch; }
+.auth-aside {
+  flex: 0 0 42%;
+  background: var(--primary); color: #fff; padding: 48px;
+  display: flex; flex-direction: column; justify-content: center; gap: 16px;
+}
 .auth-aside .brand { color: #fff; }
 .auth-aside .brand-mark { background: rgba(255,255,255,.18); }
-.auth-main { padding: 48px; display: flex; align-items: center; justify-content: center; }
+.auth-main { flex: 1 1 58%; padding: 48px; display: flex; align-items: center; justify-content: center; }
 .auth-form { width: 100%; max-width: 420px; }
 .auth-form h1 { font-size: 1.6rem; margin-bottom: 6px; }
 .hint { margin-top: 16px; font-size: .9rem; }
 
 @media (max-width: 860px) {
   .hero { grid-template-columns: 1fr; padding-top: 32px; }
-  .auth-wrap { grid-template-columns: 1fr; }
-  .auth-aside { padding: 32px; }
+  .auth-wrap { flex-direction: column; }
+  .auth-aside { flex-basis: auto; padding: 32px; }
   .auth-main { padding: 24px; }
   .main-nav { display: none; }
 }
 
-/* ===== Wizard ===== */
-.wizard-steps { display: flex; gap: 8px; margin-bottom: 28px; }
-.wizard-step {
-  flex: 1; text-align: center; padding: 10px 6px; border-radius: var(--radius);
-  background: var(--surface-2); color: var(--text-2); font-size: .82rem; font-weight: 600;
-  border: 1px solid var(--line);
+/* ===== Wizard stepper (lingkaran bernomor + garis penyambung) ===== */
+.stepper { display: flex; margin-bottom: 32px; }
+.step {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
-.wizard-step.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-.wizard-step.done { background: color-mix(in srgb, var(--primary) 16%, var(--surface)); color: var(--primary); border-color: var(--primary); }
+/* garis dari tengah lingkaran step ini ke tengah lingkaran step berikutnya */
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 17px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--line);
+  z-index: 0;
+}
+.step.done:not(:last-child)::after { background: var(--primary); }
+
+.step-circle {
+  position: relative;
+  z-index: 1;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: .9rem;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  color: var(--text-2);
+  transition: background-color .15s, border-color .15s, color .15s;
+}
+.step.active .step-circle { border-color: var(--primary); color: var(--primary); }
+.step.done .step-circle { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+.step-label {
+  margin-top: 8px;
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--text-2);
+  max-width: 90px;
+}
+.step.active .step-label, .step.done .step-label { color: var(--text); }
+
 .wizard-actions { display: flex; justify-content: space-between; margin-top: 24px; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
 @media (max-width: 520px) { .grid-2 { grid-template-columns: 1fr; } }
